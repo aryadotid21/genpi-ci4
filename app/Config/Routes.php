@@ -36,6 +36,11 @@ $routes->post('/regist', 'Home::regist');
 $routes->post('/login', 'Home::login');
 $routes->get('/logout', 'Home::logout');
 $routes->get('/details/(:num)', 'Home::details/$1');
+$routes->post('/follow/(:num)', 'Home::follow/$1');
+$routes->post('/unfollow/(:num)', 'Home::unfollow/$1');
+$routes->get('/test', function () {
+	echo session()->get('id');
+});
 /*
  * --------------------------------------------------------------------
  * Additional Routing

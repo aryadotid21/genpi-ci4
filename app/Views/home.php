@@ -1,5 +1,5 @@
 <?php
-helper('date');
+helper(['date', 'isFollow']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -125,7 +125,7 @@ helper('date');
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="nav-register" role="tabpanel" aria-labelledby="nav-register-tab">
-                        <div class="col-sm-6 ofwwwet-3">
+                        <div class="d-flex justify-content-center align-items-center">
                             <?php if (!empty(session()->getFlashdata('error'))) : ?>
                                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                     <h4>Periksa Entrian Form</h4>
@@ -135,11 +135,11 @@ helper('date');
                             <?php endif; ?>
                             <form class="form-signin text-center" method="POST" action="<?= base_url(); ?>/regist" enctype="multipart/form-data">
                                 <h1 class=" h3 mb-3 font-weight-normal">Register</h1>
-                                <input type="text" class="form-control" placeholder="Nama" name="name" required autofocus>
-                                <input type="email" class="form-control" placeholder="Email address" name="email" required autofocus>
-                                <input type="password" class="form-control" placeholder="Password" name="password" required>
-                                <textarea class="form-control" placeholder="Alamat" name="alamat" required></textarea>
-                                <input type="file" class="form-control" placeholder="foto" name="foto" required>
+                                <input type="text" class="form-control" placeholder="Nama" name="name" required autofocus><br>
+                                <input type="email" class="form-control" placeholder="Email address" name="email" required autofocus><br>
+                                <input type="password" class="form-control" placeholder="Password" name="password" required><br>
+                                <textarea class="form-control" placeholder="Alamat" name="alamat" required></textarea><br>
+                                <input type="file" class="form-control" placeholder="foto" name="foto" required><br>
                                 <button class="btn btn-lg btn-primary btn-block" type="submit">Daftar</button>
                             </form>
                         </div>
@@ -151,13 +151,22 @@ helper('date');
                                 <li class="media">
                                     <img src="/images/profile/<?php echo $user->foto ?>" class="mr-3" alt="title" style="width:200px">
                                     <div class="media-body">
-                                        <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile" id="details" data-id="<?php echo $user->id ?>" class="details"><?php echo $user->name ?></a></h5>
-                                        <p><?php echo $user->alamat ?></p>
-                                        <?php if (session()->has('email')) : ?>
-                                            <a href="#" class="btn btn-secondary">Following</a>
-                                        <?php else : ?>
-                                            <a href="/" class="btn btn-secondary">Following</a>
-                                        <?php endif; ?>
+                                        <h5 class="mt-0 mb-1">
+                                            <?php if (session()->has('email')) : ?>
+                                                <?php
+                                                notFollow(session()->get('id'), $user);
+                                                ?></h5>
+                                    <?php else : ?>
+                                        <a href='javascript:;' data-toggle='modal' data-target='#profile' id='details'><?php echo $user->name ?></a>
+                                    <?php endif; ?>
+                                    <p><?php echo $user->alamat ?></p>
+                                    <?php if (session()->has('email')) : ?>
+                                        <?php
+                                        isFollow(session()->get('id'), $user->id);
+                                        ?>
+                                    <?php else : ?>
+                                        <a href="javascript:void(0)" onclick="$('#nav-login-tab').click();" class="btn btn-primary">Follow</a>
+                                    <?php endif; ?>
                                     </div>
                                 </li><br>
                             <?php }
@@ -165,7 +174,7 @@ helper('date');
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab">
-                        <div class="row">
+                        <div class="row d-flex justify-content-center align-items-center">
                             <div class="col-sm-6 ofwwwet-3">
                                 <?php if (session()->has('email')) : ?>
                                     <p class="text-center">
@@ -174,16 +183,23 @@ helper('date');
                                         Anda sudah login sebagai <?php echo session()->get('name') ?>. <br /> <a href="/logout">Logout</a>
                                     </p>
                                 <?php else : ?>
+                                    <?php if (!empty(session()->getFlashdata('error'))) : ?>
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            <h4>Periksa Entrian Form</h4>
+                                            </hr />
+                                            <?php echo session()->getFlashdata('error'); ?>
+                                        </div>
+                                    <?php endif; ?>
                                     <p class="text-center">
                                         <!-- comment belum login -->
-                                        Anda belum login, cek user anda.
+                                        Anda belum login, silahkan login terlebih dahulu.
                                     </p>
                                     <form class="form-signin text-center" method="POST" action="<?= base_url(); ?>/login">
                                         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
                                         <label for="inputEmail" class="sr-only">Email address</label>
-                                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus>
+                                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="email" required autofocus><br>
                                         <label for="inputPassword" class="sr-only">Password</label>
-                                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+                                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required><br>
                                         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
                                     </form>
                                 <?php endif; ?>
@@ -209,7 +225,7 @@ helper('date');
                         </div>
                     <?php else : ?>
                         <div class="media">
-                            Maaf anda tidak punya akses, harap follow terlebih dahulu
+                            Maaf anda tidak punya akses, harap login terlebih dahulu
                         </div>
                     <?php endif; ?>
                 </div>
@@ -229,14 +245,17 @@ helper('date');
                 dataType: 'json',
                 success: function(response) {
                     var data = (response);
-                    // console.log(data.user[0].name);
                     $('.name_view').text(data.user[0].name);
                     $('.alamat_view').text(data.user[0].alamat);
                     $('.foto_view').attr("src", "/images/profile/" + data.user[0].foto);
                     $('modal').modal('show');
-                }
+                },
             });
         });
+
+        function emptyData() {
+            alert('Maaf! Anda tidak punya akses Untuk melihat profil. Follow dulu!');
+        }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>

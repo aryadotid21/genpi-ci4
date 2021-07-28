@@ -15,19 +15,25 @@ class Home extends BaseController
 		$response = $this->client->request('GET', 'https://api.jsonstorage.net/v1/json/41624f5e-2d72-45c7-a6a0-726abc282fbc');
 		$data['data'] = json_decode($response->getBody());
 		$data['user'] = $this->database->query('SELECT * FROM users')->getResult();
+		$data['follow'] = $this->database->query("SELECT * FROM follows")->getResult();
+
 		return view('home', $data);
-		// dd($user);
+		// dd($data['user'][0]->id);
+		// echo ($data['follow'][3]->id);
+		// foreach ($data['follow'] as $follow)
+		// 	if ($follow->follower_id == 3) {
+		// 		echo 'sukses';
+		// 	} else {
+		// 		echo 'Gagal';
+		// 	}
 	}
 
 	public function details($id)
 	{
-		// $id = $this->request->getPost('id');
-		// $data['user'] = $this->database->query("SELECT * FROM users WHERE id = $id");
-		// return 'success';
-		// dd($data);
 		$data['user'] = $this->database->query("SELECT * FROM users WHERE id = $id")->getResult();
 		return json_encode($data);
 	}
+
 
 	public function regist()
 	{
@@ -97,6 +103,7 @@ class Home extends BaseController
 		if ($dataUser) {
 			if (password_verify($password, $dataUser->password)) {
 				session()->set([
+					'id' => $dataUser->id,
 					'email' => $dataUser->email,
 					'name' => $dataUser->name,
 					'alamat' => $dataUser->alamat,
@@ -106,17 +113,30 @@ class Home extends BaseController
 				return redirect()->to('/');
 			} else {
 				session()->setFlashdata('error', 'Email & Password Salah');
-				echo 'failed';
+				return redirect()->to('/');
 			}
 		} else {
 			session()->setFlashdata('error', 'Email & Password Salah');
-			echo 'failed';
+			return redirect()->to('/');
 		}
 	}
 
-	function logout()
+	public function logout()
 	{
 		session()->destroy();
+		return redirect()->to('/');
+	}
+
+	public function follow($following)
+	{
+		$follower_id = session()->get('id');
+		$this->database->query("INSERT INTO follows(follower_id,following_id) VALUES ('$follower_id','$following')");
+		return redirect()->to('/');
+	}
+
+	public function unfollow($id)
+	{
+		$this->database->query("DELETE FROM follows WHERE id='$id'");
 		return redirect()->to('/');
 	}
 }
