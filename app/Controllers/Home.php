@@ -18,14 +18,6 @@ class Home extends BaseController
 		$data['follow'] = $this->database->query("SELECT * FROM follows")->getResult();
 
 		return view('home', $data);
-		// dd($data['user'][0]->id);
-		// echo ($data['follow'][3]->id);
-		// foreach ($data['follow'] as $follow)
-		// 	if ($follow->follower_id == 3) {
-		// 		echo 'sukses';
-		// 	} else {
-		// 		echo 'Gagal';
-		// 	}
 	}
 
 	public function details($id)
@@ -33,7 +25,6 @@ class Home extends BaseController
 		$data['user'] = $this->database->query("SELECT * FROM users WHERE id = $id")->getResult();
 		return json_encode($data);
 	}
-
 
 	public function regist()
 	{
@@ -88,8 +79,6 @@ class Home extends BaseController
 			'foto' => $imageName,
 		]);
 		return redirect()->to('/');
-		// dd($imageName);
-		// dd($this->request->getVar());
 	}
 
 	public function login()

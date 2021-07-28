@@ -2,8 +2,6 @@
 if (!function_exists('isFollow')) {
     function isFollow($following, $follower)
     {
-        // $check = \Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower)->getResult();
-        // $unfollow_id = !\Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower)->getResult()[0]->id;
         $check = \Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower)->getResult();
         if ($check == NULL) {
             if ($follower == session()->get('id')) {
@@ -17,9 +15,6 @@ if (!function_exists('isFollow')) {
     }
     function notFollow($following, $follower)
     {
-        // $check = \Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower)->getResult();
-        // $unfollow_id = !\Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower)->getResult()[0]->id;
-
         $check = \Config\Database::connect()->query("SELECT * FROM follows WHERE follower_id = " . $following . " AND following_id = " . $follower->id)->getResult();
         if ($check) {
             echo "<a href='javascript:;' data-toggle='modal' data-target='#profile' id='details' data-id='$follower->id' class='details'>$follower->name</a>";
