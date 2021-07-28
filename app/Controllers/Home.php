@@ -12,11 +12,23 @@ class Home extends BaseController
 
 	public function index()
 	{
-		$client = $this->client;;
-		$response = $client->request('GET', 'https://api.jsonstorage.net/v1/json/41624f5e-2d72-45c7-a6a0-726abc282fbc');
+		$response = $this->client->request('GET', 'https://api.jsonstorage.net/v1/json/41624f5e-2d72-45c7-a6a0-726abc282fbc');
 		$data['data'] = json_decode($response->getBody());
+		$data['user'] = $this->database->query('SELECT * FROM users')->getResult();
 		return view('home', $data);
+		// dd($user);
 	}
+
+	public function details($id)
+	{
+		// $id = $this->request->getPost('id');
+		// $data['user'] = $this->database->query("SELECT * FROM users WHERE id = $id");
+		// return 'success';
+		// dd($data);
+		$data['user'] = $this->database->query("SELECT * FROM users WHERE id = $id")->getResult();
+		return json_encode($data);
+	}
+
 	public function regist()
 	{
 		if (!$this->validate([
@@ -59,7 +71,7 @@ class Home extends BaseController
 		$file = $this->request->getFile('foto');
 		if ($file->isValid() && !$file->hasMoved()) {
 			$imageName = $file->getRandomName();
-			$file->move('image/', $imageName);
+			$file->move('images/profile/', $imageName);
 		}
 		$users = new UsersModel();
 		$users->insert([

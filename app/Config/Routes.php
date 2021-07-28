@@ -35,6 +35,7 @@ $routes->get('/', 'Home::index');
 $routes->post('/regist', 'Home::regist');
 $routes->post('/login', 'Home::login');
 $routes->get('/logout', 'Home::logout');
+$routes->get('/details/(:num)', 'Home::details/$1');
 /*
  * --------------------------------------------------------------------
  * Additional Routing

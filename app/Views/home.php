@@ -76,7 +76,6 @@ helper('date');
                         <?php else : ?>
                             <a class="nav-item nav-link" id="nav-register-tab" data-toggle="tab" href="#nav-register" role="tab" aria-controls="nav-register" aria-selected="false">Registers</a>
                         <?php endif; ?>
-
                         <a class="nav-item nav-link" id="nav-user-tab" data-toggle="tab" href="#nav-user" role="tab" aria-controls="nav-user" aria-selected="false">List User</a>
                         <?php if (session()->has('email')) : ?>
                             <a class="nav-item nav-link" id="nav-login-tab" data-toggle="tab" href="#nav-login" role="tab" aria-controls="nav-login" aria-selected="false">Profile</a>
@@ -147,30 +146,22 @@ helper('date');
                     </div>
                     <div class="tab-pane fade" id="nav-user" role="tabpanel" aria-labelledby="nav-user-tab">
                         <ul class="list-unstyled">
-                            <li class="media">
-                                <img src="https://www.genpi.co/timthumb.php?src=https://demo.joomlashine.com/joomla-templates/jsn_metro/free/images/content/content-html/demo-image1.jpg&w=128&h=128&zc=1&q=80" class="mr-3" alt="title">
-                                <div class="media-body">
-                                    <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile">Nama 1</a></h5>
-                                    <p>Alamat 1, Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                    <a href="#" class="btn btn-secondary">Following</a>
-                                </div>
-                            </li>
-                            <li class="media my-4">
-                                <img src="https://www.genpi.co/timthumb.php?src=https://demo.joomlashine.com/joomla-templates/jsn_metro/free/images/content/content-html/demo-image1.jpg&w=128&h=128&zc=1&q=80" class="mr-3" alt="title">
-                                <div class="media-body">
-                                    <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile">Nama 2</a></h5>
-                                    <p>Alamat 2, Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                    <a href="#" class="btn btn-secondary">Following</a>
-                                </div>
-                            </li>
-                            <li class="media">
-                                <img src="https://www.genpi.co/timthumb.php?src=https://demo.joomlashine.com/joomla-templates/jsn_metro/free/images/content/content-html/demo-image1.jpg&w=128&h=128&zc=1&q=80" class="mr-3" alt="title">
-                                <div class="media-body">
-                                    <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile">Nama 3</a></h5>
-                                    <p>Alamat 3, sCras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-                                    <a href="#" class="btn btn-primary">Follow</a>
-                                </div>
-                            </li>
+                            <?php
+                            foreach ($user as $user) { ?>
+                                <li class="media">
+                                    <img src="/images/profile/<?php echo $user->foto ?>" class="mr-3" alt="title" style="width:200px">
+                                    <div class="media-body">
+                                        <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile" id="details" data-id="<?php echo $user->id ?>" class="details"><?php echo $user->name ?></a></h5>
+                                        <p><?php echo $user->alamat ?></p>
+                                        <?php if (session()->has('email')) : ?>
+                                            <a href="#" class="btn btn-secondary">Following</a>
+                                        <?php else : ?>
+                                            <a href="/" class="btn btn-secondary">Following</a>
+                                        <?php endif; ?>
+                                    </div>
+                                </li><br>
+                            <?php }
+                            ?>
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab">
@@ -208,16 +199,19 @@ helper('date');
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="media">
-                        <img src="https://www.genpi.co/timthumb.php?src=https://demo.joomlashine.com/joomla-templates/jsn_metro/free/images/content/content-html/demo-image1.jpg&w=128&h=128&zc=1&q=80" class="mr-3" alt="title">
-                        <div class="media-body">
-                            <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile">Nama 3</a></h5>
-                            <p>Alamat 3, sCras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.ssssssssssssssss</p>
+                    <?php if (session()->has('email')) : ?>
+                        <div class="media">
+                            <img src="#" class="mr-3 foto_view" alt="title" style="width:200px">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1"><a href="javascript:;" data-toggle="modal" data-target="#profile" class="name_view"></a></h5>
+                                <p class="alamat_view">Alamat 3, sCras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.ssssssssssssssss</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="media">
-                        Maaf anda tidak punya akses, harap follow terlebih dahulu
-                    </div>
+                    <?php else : ?>
+                        <div class="media">
+                            Maaf anda tidak punya akses, harap follow terlebih dahulu
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -225,7 +219,26 @@ helper('date');
             </div>
         </div>
     </div>
+    <script>
+        $(".details").click(function() {
+            var id = $(this).data('id');
 
+            $.ajax({
+                method: "GET",
+                url: "/details/" + id,
+                dataType: 'json',
+                success: function(response) {
+                    var data = (response);
+                    // console.log(data.user[0].name);
+                    $('.name_view').text(data.user[0].name);
+                    $('.alamat_view').text(data.user[0].alamat);
+                    $('.foto_view').attr("src", "/images/profile/" + data.user[0].foto);
+                    $('modal').modal('show');
+                }
+            });
+        });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
 </body>
